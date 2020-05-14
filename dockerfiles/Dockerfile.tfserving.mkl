@@ -66,7 +66,7 @@ RUN git clone --branch=${TF_SERVING_VERSION_GIT_BRANCH} https://github.com/tenso
 
 FROM base_build as binary_build
 # Build, and install TensorFlow Serving
-ARG TF_SERVING_BUILD_OPTIONS="--config=release"
+ARG TF_SERVING_BUILD_OPTIONS="--config=release --config=mkl"
 RUN echo "Building with build options: ${TF_SERVING_BUILD_OPTIONS}"
 ARG TF_SERVING_BAZEL_OPTIONS=""
 RUN echo "Building with Bazel options: ${TF_SERVING_BAZEL_OPTIONS}"
@@ -80,6 +80,9 @@ RUN bazel build --color=yes --curses=yes \
     cp bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server \
     /usr/local/bin/
 
+# Copy MKL libraries
+RUN cp /root/.cache/bazel/_bazel_root/*/external/mkl_linux/lib/* /usr/local/lib
+
 FROM binary_build as clean_build
 FROM ubuntu:18.04
 
@@ -88,4 +91,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Install TF Serving pkg
 COPY --from=clean_build /usr/local/bin/tensorflow_model_server /usr/bin/tensorflow_model_server
+
+# Install MKL libraries
+COPY --from=clean_build /usr/local/lib/libiomp5.so /usr/local/lib
+COPY --from=clean_build /usr/local/lib/libmklml_gnu.so /usr/local/lib
+COPY --from=clean_build /usr/local/lib/libmklml_intel.so /usr/local/lib
+
+ENV LIBRARY_PATH '/usr/local/lib:$LIBRARY_PATH'
+ENV LD_LIBRARY_PATH '/usr/local/lib:$LD_LIBRARY_PATH'
