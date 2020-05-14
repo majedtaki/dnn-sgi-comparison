@@ -95,7 +95,7 @@ RUN git clone --branch=${TF_SERVING_VERSION_GIT_BRANCH} https://github.com/tenso
 
 FROM base_build as binary_build
 # Build, and install TensorFlow Serving
-ARG TF_SERVING_BUILD_OPTIONS="--config=release"
+ARG TF_SERVING_BUILD_OPTIONS="--copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-msse4.1 --copt=-msse4.2 --copt=-O3"
 RUN echo "Building with build options: ${TF_SERVING_BUILD_OPTIONS}"
 ARG TF_SERVING_BAZEL_OPTIONS=""
 RUN echo "Building with Bazel options: ${TF_SERVING_BAZEL_OPTIONS}"
