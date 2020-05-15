@@ -1,5 +1,5 @@
 ---
-name: pytorch
+name: base
 channels:
   - conda-forge
   - defaults
