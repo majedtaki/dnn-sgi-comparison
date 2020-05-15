@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:latest
+FROM continuumio/miniconda:4.7.12
 
 RUN  mkdir -p /workspace
 WORKDIR /workspace
@@ -7,9 +7,12 @@ COPY src ./src
 COPY scripts ./scripts
 
 COPY requirements/requirements_server.txt ./requirements.txt
+COPY requirements/conda_environment.yml ./environment.yml
 
 RUN apt-get update && apt-get install -y libev-dev
-RUN pip install -r requirements.txt
+RUN conda env update -f environment.yml \
+    && pip install -r requirements.txt
+    && conda clean -y --all
 
 RUN mkdir ./data
 

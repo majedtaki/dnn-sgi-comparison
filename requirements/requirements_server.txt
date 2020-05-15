@@ -3,4 +3,3 @@ Flask==1.1.2
 numpy==1.18.4
 sanic==19.12.2
 uvicorn==0.11.5
-uWSGI==2.0.18

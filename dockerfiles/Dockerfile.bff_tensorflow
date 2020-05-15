@@ -12,6 +12,7 @@ COPY requirements/requirements_proxy_tensorflow.txt ./requirements_bff.txt
 RUN apt-get update && apt-get install -y libev-dev
 RUN pip install -r requirements.txt
 RUN pip install -r requirements_bff.txt
+RUN pip install uWSGI==2.0.18
 
 ENV FRAMEWORK_TYPE bff_tensorflow
 
