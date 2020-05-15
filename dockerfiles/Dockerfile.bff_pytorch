@@ -1,0 +1,18 @@
+FROM python:3.7.7
+
+RUN  mkdir -p /workspace
+WORKDIR /workspace
+
+COPY src ./src
+COPY scripts ./scripts
+
+COPY requirements/requirements_server.txt ./requirements.txt
+COPY requirements/requirements_proxy_pytorch.txt ./requirements_bff.txt
+
+RUN apt-get update && apt-get install -y libev-dev
+RUN pip install -r requirements.txt
+RUN pip install -r requirements_bff.txt
+
+ENV FRAMEWORK_TYPE bff_pytorch
+
+ENTRYPOINT ["./scripts/run_server.sh"]

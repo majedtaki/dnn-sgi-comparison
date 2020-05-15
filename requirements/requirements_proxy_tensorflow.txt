@@ -1,0 +1,2 @@
+tensorflow-serving-api==2.1.0
+grpcio==1.28.1
