@@ -11,6 +11,7 @@ COPY requirements/conda_environment.yml ./environment.yml
 
 RUN apt-get update && apt-get install -y libev-dev
 RUN conda env update -f environment.yml \
+    && conda update -n base -c defaults conda
     && conda install pytorch torchvision cpuonly -c pytorch \
     && pip install -r requirements.txt \
     && pip install onnxruntime==1.2.0 \
