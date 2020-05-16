@@ -6,10 +6,10 @@ from src.proxy_tfserving import ProxyTFServing
 
 app = FastAPI()
 
-if os.environ.get('CHANNELS_FIRST') == 'yes':
-    input_size = (3, 224, 224)
+if os.environ.get('CHANNELS_FIRST', False):
+    input_size = (1, 3, 224, 224)
 else:
-    input_size = (224, 224, 3)
+    input_size = (1, 224, 224, 3)
 
 predictor = ProxyTFServing(
     os.environ.get('BACKEND_HOST', 'localhost'),
