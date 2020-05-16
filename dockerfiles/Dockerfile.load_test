@@ -1,0 +1,17 @@
+FROM alpine:latest
+
+RUN apk add --update --no-cache ca-certificates
+
+ADD https://github.com/tsenart/vegeta/releases/download/v12.8.3/vegeta-12.8.3-linux-amd64.tar.gz  /go/bin/vegeta.tar.gz
+
+RUN cd /go/bin && tar -xvzf /go/bin/vegeta.tar.gz \
+    && rm -f vegeta.tar.gz \
+    && chmod +x /go/bin/vegeta \
+    && ln -s /go/bin/vegeta /usr/local/bin/vegeta
+
+RUN  mkdir -p /workspace
+WORKDIR /workspace
+
+COPY scripts/target.txt ./target.txt
+COPY scripts/run_load_test.sh ./run_load_test.sh
+RUN chmod +x ./run_load_test.sh

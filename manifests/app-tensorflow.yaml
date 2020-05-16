@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test-app
+  name: app-tensorflow
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-app
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      containers:
+      - env:
+        - name: SERVER_TYPE
+          value: fastapi
+        - name: NUM_WORKERS
+          value: "1"
+        - name: PORT
+          value: "8000"
+        image: lain21/app-tensorflow:latest
+        name: app-tensorflow
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 4000m
+            memory: 4Gi
+          requests:
+            cpu: 4000m
+            memory: 4Gi

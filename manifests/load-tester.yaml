@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: load-tester
+  name: load-tester
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: load-tester
+  template:
+    metadata:
+      labels:
+        app: load-tester
+    spec:
+      containers:
+      - image: lain21/load-tester:latest
+        name: load-tester
+        command: ["sh", "-c", "tail -f /dev/null"]
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 100Mi
+          requests:
+            cpu: 1000m
+            memory: 100Mi
