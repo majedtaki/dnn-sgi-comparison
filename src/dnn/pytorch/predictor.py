@@ -11,10 +11,10 @@ class Predictor:
         self._input_size = input_size
 
     def predict(self) -> dict:
-        input_data = np.random.rand(*self._input_size).astype(np.float32)
-        tensor: torch.Tensor = torch.from_numpy(input_data)
-        output: torch.Tensor = self._model(tensor)
-        _, pred = output.max(1)
+        with torch.no_grad():
+            tensor: torch.Tensor = torch.rand(*self._input_size, dtype=torch.float32)
+            output: torch.Tensor = self._model(tensor)
+            pred: np.ndarray = output.numpy()
         return {
-            "prediction": pred.item()
+            "prediction": np.argmax(pred, 1).item()
         }
