@@ -2,11 +2,11 @@ import os
 import uvicorn
 from fastapi import FastAPI, Header, HTTPException
 
-from src.proxy_pytorch import ProxyPyTorch
+from src.proxy_http import ProxyHTTP
 
 app = FastAPI()
 
-predictor = ProxyPyTorch(os.environ.get('BACKEND_HOST', 'localhost'), int(os.environ.get('BACKEND_PORT', 8500)))
+predictor = ProxyHTTP(os.environ.get('BACKEND_HOST', 'localhost'), int(os.environ.get('BACKEND_PORT', 8500)))
 
 
 @app.get('/')

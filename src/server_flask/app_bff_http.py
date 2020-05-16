@@ -1,11 +1,11 @@
 import os
 from flask import Flask, jsonify
 
-from src.proxy_pytorch import ProxyPyTorch
+from src.proxy_http import ProxyHTTP
 
 app = Flask(__name__)
 
-predictor = ProxyPyTorch(os.environ.get('BACKEND_HOST', 'localhost'), int(os.environ.get('BACKEND_PORT', 8500)))
+predictor = ProxyHTTP(os.environ.get('BACKEND_HOST', 'localhost'), int(os.environ.get('BACKEND_PORT', 8500)))
 
 
 @app.route('/')

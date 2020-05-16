@@ -1,7 +1,7 @@
 import requests
 
 
-class ProxyPyTorch:
+class ProxyHTTP:
     def __init__(self, host: str = 'localhost', port: int = 8500):
         self._endpoint = 'http://' + host + ':' + str(port) + '/predict'
 
