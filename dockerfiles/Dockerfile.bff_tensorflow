@@ -16,4 +16,6 @@ RUN pip install uWSGI==2.0.18
 
 ENV FRAMEWORK_TYPE bff_tensorflow
 
+RUN chmod +x ./scripts/run_server.sh
+
 ENTRYPOINT ["./scripts/run_server.sh"]

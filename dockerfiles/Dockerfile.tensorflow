@@ -18,4 +18,6 @@ RUN python -m src.dnn.tensorflow.save_model
 
 ENV FRAMEWORK_TYPE tensorflow
 
+RUN chmod +x ./scripts/run_server.sh
+
 ENTRYPOINT ["./scripts/run_server.sh"]

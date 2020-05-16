@@ -21,4 +21,6 @@ RUN python -m src.dnn.onnxruntime.save_model
 
 ENV FRAMEWORK_TYPE onnxruntime
 
+RUN chmod +x ./scripts/run_server.sh
+
 ENTRYPOINT ["./scripts/run_server.sh"]
