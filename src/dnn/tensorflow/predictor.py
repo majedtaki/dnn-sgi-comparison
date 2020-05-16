@@ -7,7 +7,7 @@ class Predictor:
         self._loaded = tf.saved_model.load('./data/resnet50_tf/1')
         self._infer = self._loaded.signatures['serving_default']
         self._input_size = input_size
-        self._output_name = 'predictions'
+        self._output_name = 'probs'
 
     def predict(self) -> dict:
         input_data = np.random.rand(*self._input_size).astype(np.float32)
