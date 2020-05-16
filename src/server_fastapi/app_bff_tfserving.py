@@ -2,11 +2,20 @@ import os
 import uvicorn
 from fastapi import FastAPI, Header, HTTPException
 
-from src.proxy_tensorflow import ProxyTFServing
+from src.proxy_tfserving import ProxyTFServing
 
 app = FastAPI()
 
-predictor = ProxyTFServing(os.environ.get('BACKEND_HOST', 'localhost'), int(os.environ.get('BACKEND_PORT', 8500)))
+if os.environ.get('CHANNELS_FIRST') == 'yes':
+    input_size = (3, 224, 224)
+else:
+    input_size = (224, 224, 3)
+
+predictor = ProxyTFServing(
+    os.environ.get('BACKEND_HOST', 'localhost'),
+    int(os.environ.get('BACKEND_PORT', 8500)),
+    input_size
+)
 
 
 @app.get('/')
