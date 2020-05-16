@@ -124,7 +124,19 @@ RUN bazel build --color=yes --curses=yes \
 # Copy MKL libraries
 RUN cp /root/.cache/bazel/_bazel_root/*/external/mkl_linux/lib/* /usr/local/lib
 
-FROM binary_build as clean_build
+FROM python:3.7.7 as data_base
+
+RUN  mkdir -p /workspace
+WORKDIR /workspace
+
+COPY src ./src
+
+RUN apt-get update && apt-get install -y libev-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir tensorflow==2.1.0
+
+RUN mkdir ./data
+RUN python -m src.dnn.tensorflow.save_model --channels-first
+
 FROM ubuntu:18.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -133,12 +145,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install TF Serving pkg
-COPY --from=clean_build /usr/local/bin/tensorflow_model_server /usr/bin/tensorflow_model_server
+COPY --from=binary_build /usr/local/bin/tensorflow_model_server /usr/bin/tensorflow_model_server
 
 # Install MKL libraries
-COPY --from=clean_build /usr/local/lib/libiomp5.so /usr/local/lib
-COPY --from=clean_build /usr/local/lib/libmklml_gnu.so /usr/local/lib
-COPY --from=clean_build /usr/local/lib/libmklml_intel.so /usr/local/lib
+COPY --from=binary_build /usr/local/lib/libiomp5.so /usr/local/lib
+COPY --from=binary_build /usr/local/lib/libmklml_gnu.so /usr/local/lib
+COPY --from=binary_build /usr/local/lib/libmklml_intel.so /usr/local/lib
+
+RUN mkdir -p /models
+COPY --from=data_base /workspace/data/resnet50_tf /models/resnet50_tf
 
 ENV LIBRARY_PATH '/usr/local/lib:$LIBRARY_PATH'
 ENV LD_LIBRARY_PATH '/usr/local/lib:$LD_LIBRARY_PATH'
