@@ -7,14 +7,14 @@ COPY src ./src
 COPY scripts ./scripts
 
 COPY requirements/requirements_server.txt ./requirements.txt
-COPY requirements/requirements_proxy_pytorch.txt ./requirements_bff.txt
+COPY requirements/requirements_proxy_tfserving.txt ./requirements_bff.txt
 
 RUN apt-get update && apt-get install -y libev-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements_bff.txt
 RUN pip install --no-cache-dir uWSGI==2.0.18
 
-ENV FRAMEWORK_TYPE bff_pytorch
+ENV FRAMEWORK_TYPE bff_tfserving
 
 RUN chmod +x ./scripts/run_server.sh
 
