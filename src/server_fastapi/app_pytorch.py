@@ -1,10 +1,15 @@
+import os
 import uvicorn
 from fastapi import FastAPI, Header, HTTPException
 
-from src.dnn.pytorch.predictor import Predictor
+from src.dnn.pytorch.predictor import PredictorResNet50, PredictorMLP
 
 app = FastAPI()
-predictor = Predictor()
+model_name = os.environ.get('MODEL', 'resnet50')
+if model_name == 'resnet50':
+    predictor = PredictorResNet50()
+else:
+    predictor = PredictorMLP()
 
 
 @app.get('/')

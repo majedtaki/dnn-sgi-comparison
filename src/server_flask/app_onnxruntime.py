@@ -1,11 +1,15 @@
 import os
 from flask import Flask, jsonify
 
-from src.dnn.onnxruntime.predictor import Predictor
+from src.dnn.onnxruntime.predictor import PredictorResNet50, PredictorMLP
 
 app = Flask(__name__)
 
-predictor = Predictor()
+model_name = os.environ.get('MODEL', 'resnet50')
+if model_name == 'resnet50':
+    predictor = PredictorResNet50()
+else:
+    predictor = PredictorMLP()
 
 
 @app.route('/')
