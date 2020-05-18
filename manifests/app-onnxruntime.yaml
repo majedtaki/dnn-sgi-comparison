@@ -16,15 +16,17 @@ spec:
         app: test-app
     spec:
       containers:
-      - env:
+      - image: lain21/app-onnxruntime:latest
+        name: app-onnxruntime
+        env:
         - name: SERVER_TYPE
           value: fastapi
         - name: NUM_WORKERS
           value: "1"
+        - name: MODEL
+          value: resnet50
         - name: PORT
           value: "8000"
-        image: lain21/app-onnxruntime:latest
-        name: app-onnxruntime
         ports:
         - containerPort: 8000
           name: http
@@ -36,3 +38,10 @@ spec:
           requests:
             cpu: 4000m
             memory: 4Gi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 1

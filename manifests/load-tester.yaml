@@ -21,8 +21,8 @@ spec:
         command: ["sh", "-c", "tail -f /dev/null"]
         resources:
           limits:
-            cpu: 1000m
-            memory: 100Mi
+            cpu: 4000m
+            memory: 500Mi
           requests:
-            cpu: 1000m
-            memory: 100Mi
+            cpu: 4000m
+            memory: 500Mi

@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test-app
+  name: app-bff-tfserving
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-app
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      containers:
+      - image: lain21/app-bff-tfserving:latest
+        name: app-bff-tfserving
+        env:
+        - name: SERVER_TYPE
+          value: fastapi
+        - name: NUM_WORKERS
+          value: "1"
+        - name: PORT
+          value: "8000"
+        - name: CHANNELS_FIRST
+          value: "true"
+        - name: BACKEND_HOST
+          value: localhost
+        - name: BACKEND_PORT
+          value: "8500"
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 1000m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 1
+      - image: lain21/tfserving-mkl-resnet50:latest
+        name: tfserving
+        command: [ "tensorflow_model_server" ]
+        args:
+        - "--port=8500"
+        - "--model_name=resnet50_tf"
+        - "--model_base_path=/models/resnet50_tf"
+        - "--tensorflow_intra_op_parallelism=4"
+        - "--tensorflow_inter_op_parallelism=0"
+        env:
+        - name: OMP_NUM_THREADS
+          value: "4"
+        - name: KMP_BLOCKTIME
+          value: "0"
+        - name: KMP_SETTINGS
+          value: "1"
+        - name: KMP_AFFINITY
+          value: granularity=fine,verbose,compact,1,0
+        - name: MKLDNN_VERBOSE
+          value: "0"
+        ports:
+        - containerPort: 8500
+        resources:
+          limits:
+            cpu: 4000m
+            memory: 3Gi
+          requests:
+            cpu: 4000m
+            memory: 3Gi

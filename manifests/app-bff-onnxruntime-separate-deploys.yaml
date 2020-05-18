@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: test-app
+  name: app-bff-onnxruntime
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-app
+  template:
+    metadata:
+      labels:
+        app: test-app
+    spec:
+      containers:
+      - image: lain21/app-bff-http:latest
+        name: app-bff-onnxruntime
+        env:
+        - name: SERVER_TYPE
+          value: flask
+        - name: NUM_WORKERS
+          value: "4"
+        - name: PORT
+          value: "8000"
+        - name: BACKEND_HOST
+          value: test-backend-headless.default.svc.cluster.local
+        - name: BACKEND_PORT
+          value: "8500"
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 1000m
+            memory: 1Gi
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 1
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: backend
+  name: app-onnxruntime
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - image: lain21/app-onnxruntime:latest
+        name: app-onnxruntime
+        env:
+        - name: SERVER_TYPE
+          value: fastapi
+        - name: NUM_WORKERS
+          value: "1"
+        - name: MODEL
+          value: resnet50
+        - name: PORT
+          value: "8500"
+        ports:
+        - containerPort: 8500
+          name: http-backend
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 4000m
+            memory: 4Gi
+          requests:
+            cpu: 4000m
+            memory: 4Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: backend
+  name: test-backend-headless
+  namespace: default
+spec:
+  clusterIP: None
+  ports:
+  - name: http-backend
+    port: 8500
+  selector:
+    app: backend
