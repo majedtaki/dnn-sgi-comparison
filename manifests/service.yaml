@@ -4,7 +4,7 @@ metadata:
   labels:
     app: test-app
   name: test-service
-  namespace: default
+  namespace: load-test
 spec:
   ports:
   - name: http

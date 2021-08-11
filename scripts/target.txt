@@ -1,2 +1,2 @@
-GET http://test-service.default.svc.cluster.local:8000/predict
+GET http://test-service.load-test.svc.cluster.local:8000/predict
 X-Token: test

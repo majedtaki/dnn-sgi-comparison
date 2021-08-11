@@ -4,7 +4,7 @@ metadata:
   labels:
     app: load-tester
   name: load-tester
-  namespace: default
+  namespace: load-test
 spec:
   replicas: 1
   selector:
@@ -16,7 +16,7 @@ spec:
         app: load-tester
     spec:
       containers:
-      - image: lain21/load-tester:latest
+      - image: gcr.io/mercari-us-ml-dev/load-tester:latest
         name: load-tester
         command: ["sh", "-c", "tail -f /dev/null"]
         resources:

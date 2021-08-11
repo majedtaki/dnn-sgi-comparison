@@ -4,6 +4,6 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.7.7
+  - python=3.8
   - uwsgi=2.0.18
   - pip

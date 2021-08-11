@@ -4,7 +4,7 @@ metadata:
   labels:
     app: test-app
   name: app-onnxruntime
-  namespace: default
+  namespace: load-test
 spec:
   replicas: 1
   selector:
@@ -16,11 +16,11 @@ spec:
         app: test-app
     spec:
       containers:
-      - image: lain21/app-onnxruntime:latest
+      - image: gcr.io/mercari-us-ml-dev/app-onnxruntime:latest
         name: app-onnxruntime
         env:
         - name: SERVER_TYPE
-          value: fastapi
+          value: fastapi_gunicorn
         - name: NUM_WORKERS
           value: "1"
         - name: MODEL
